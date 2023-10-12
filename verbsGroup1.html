@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verbs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #playlist {
+            list-style: none;
+            padding: 0;
+        }
+
+        #playlist li {
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        audio {
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        #playButton, #stopButton {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* Positioning for laptop view (screen width > 768px) */
+        @media (min-width: 769px) {
+            #audio-container {
+                position: fixed;
+                bottom: 0;
+                right: 0;
+                margin: 20px;
+            }
+
+            #file-name {
+                font-weight: bold;
+                color: rgba(255, 0, 0, 0.532);
+                font-size: 50px;
+                margin-top: 50px;
+                margin-bottom: 100px;
+            }
+        }
+
+        /* Positioning for mobile view (screen width <= 768px) */
+        @media (max-width: 768px) {
+            #audio-container {
+                position: fixed;
+                right: 0;
+                bottom: 0;
+                margin: 20px;
+            }
+
+            #file-name {
+                color: rgba(255, 0, 0, 0.532);
+                font-weight: bold;
+                font-size:30px;
+                margin-top: 40px;
+                margin-bottom: 100px;
+            }
+        }
+
+        
+        #home {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Group 1 Verbs</h1>
+   <div id="home"><a href="index.html" class="btn" style="color: aliceblue;">home</a></div> 
+    <div id="file-name"></div>
+    <ul id="playlist"></ul>
+    <div id="audio-container">
+        <audio id="audio" controls></audio>
+        <button id="playButton">Play</button>
+        <button id="stopButton">Stop</button>
+    </div>
+
+    <script>
+        const playlist = document.getElementById('playlist');
+        const audio = document.getElementById('audio');
+        const playButton = document.getElementById('playButton');
+        const stopButton = document.getElementById('stopButton');
+        const fileNameElement = document.getElementById('file-name');
+
+        // Add your MP3 file URLs here
+        const mp3Files = [
+                            'あう.mp3','あわない.mp3','あった.mp3','あわなかった.mp3','あいます.mp3','あいません.mp3','あいました.mp3','あいませんでした.mp3','あって.mp3',
+                             'いう.mp3','いわない.mp3','いった.mp3','いわなかった.mp3','いいます.mp3','いいまけん.mp3','いいました.mp3','いいませんてした.mp3','いって.mp3',
+                             'かう.mp3','かわない.mp3','かった.mp3','かわなかった.mp3','かいます.mp3','かいません.mp3','かいました.mp3','かいませんでした.mp3','かって.mp3',
+                             'あらう.mp3','あらわない.mp3','あらった.mp3','あらわなかった.mp3','あらいます.mp3','あらいません.mp3','あらいました.mp3','あらいませんでした.mp3','あらって.mp3',
+                             'うたう.mp3','うたわない.mp3','うたった.mp3','うたわなかった.mp3','うたいます.mp3','うたいません.mp3','うたいました.mp3','うたいませんでした.mp3','うたって.mp3',
+                             'さそう.mp3','さそわない.mp3','さそった.mp3','さそわなかった.mp3','さそいます.mp3','さそいません.mp3','さそいました.mp3','さそいませんでした.mp3','さそって.mp3',
+                             'すう.mp3','すわない.mp3','すった.mp3','すわなかった.mp3','すいます.mp3','すいません.mp3','すいました.mp3','すいませんでした.mp3','すって.mp3',
+                             'つかう.mp3','つかわない.mp3','つかった.mp3','つかわなかった.mp3','つかいます.mp3','つかいません.mp3','つかいました.mp3','つかいませんでした.mp3','つかって.mp3',
+                             'てつだう.mp3','てつだわない.mp3','てつだった.mp3','てつだわなかった.mp3','てつだいます.mp3','てつだいません.mp3','てつだいました.mp3','てつだいませんでした.mp3','てつだって.mp3',
+                             'ならう.mp3','ならわない.mp3','ならった.mp3','ならわなかった.mp3','ならいます.mp3','ならいません.mp3','ならいました.mp3','ならいませんでした.mp3','ならって.mp3',
+                             'ひろう.mp3','ひろわない.mp3','ひろった.mp3','ひろわなかった.mp3','ひろいます.mp3','ひろいません.mp3','ひろいました.mp3','ひろいませんでした.mp3','ひろって.mp3',
+                             'もらう.mp3','もらわない.mp3','もらった.mp3','もらわなかった.mp3','もらいます.mp3','もらいません.mp3','もらいました.mp3','もらいませんでした.mp3','もらって.mp3',
+                             'わらう.mp3','わらわない.mp3','わらった.mp3','わらわなかった.mp3','わらいます.mp3','わらいません.mp3','わらいました.mp3','わらいませんでした.mp3','わらって.mp3'
+                             /*'','','','','','','','','',
+                             '','','','','','','','','',
+                             '','','','','','','','','',
+                             '','','','','','','','','',*/
+        ];
+
+        let currentIndex = 0;
+        let isPlaying = false;
+
+        // Function to create playlist items
+        function createPlaylistItem(mp3File, index) {
+            const listItem = document.createElement('li');
+            listItem.textContent = mp3File;
+            listItem.addEventListener('click', () => {
+                playAudio(index);
+            });
+            return listItem;
+        }
+
+        // Function to play audio at a given index
+        function playAudio(index) {
+            audio.src = 'group1/'+mp3Files[index];
+            audio.play();
+            currentIndex = index;
+            isPlaying = true;
+            updateUI();
+            displayFileName(mp3Files[index]);
+        }
+
+        // Function to stop audio
+        function stopAudio() {
+            audio.pause();
+            isPlaying = false;
+            updateUI();
+            clearFileName();
+        }
+
+        // Function to update the UI based on playback state
+        function updateUI() {
+            if (isPlaying) {
+                playButton.disabled = true;
+                stopButton.disabled = false;
+                playlist.childNodes[currentIndex].style.fontWeight = 'bold';
+                playlist.childNodes[currentIndex].style.color = 'green';
+            } else {
+                playButton.disabled = false;
+                stopButton.disabled = true;
+                playlist.childNodes[currentIndex].style.fontWeight = 'normal';
+                playlist.childNodes[currentIndex].style.color = 'black';
+            }
+        }
+
+        // Function to display the file name without the last three characters
+        function displayFileName(fileName) {
+            const withoutExtension = fileName.slice(0, -4); // Remove the last 4 characters (".mp3")
+            fileNameElement.textContent = withoutExtension;
+        }
+
+        // Function to clear the file name
+        function clearFileName() {
+            fileNameElement.textContent = '';
+        }
+
+        // Add event listeners
+        playButton.addEventListener('click', () => {
+            if (!isPlaying) {
+                playAudio(currentIndex);
+            }
+        });
+
+        stopButton.addEventListener('click', () => {
+            stopAudio();
+        });
+
+        audio.addEventListener('ended', () => {
+            // Play the next song when the current one ends
+            currentIndex = (currentIndex + 1) % mp3Files.length;
+            playAudio(currentIndex);
+        });
+
+        // Populate the playlist
+        mp3Files.forEach((mp3File, index) => {
+            const listItem = createPlaylistItem(mp3File, index);
+            playlist.appendChild(listItem);
+        });
+
+        // Initialize the UI
+        updateUI();
+    </script>
+</body>
+</html>

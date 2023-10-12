@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Japanese Practice</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 36px;
+        }
+
+        p {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .motivation-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0073e6;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #0073e6;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0057a4;
+        }
+
+        .motivation-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0073e6;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 2px solid #0073e6;
+            animation: typing 4s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        .blinking-cursor {
+            margin-left: 5px;
+            background-color: #fff;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% {
+                opacity: 1;
+            }
+            50.1%, 100% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Japanese Practice</h1>
+        <p id='motivation-text'></p>
+        <div class="button-container">
+            <a href="verbsGroup1.html" class="btn">Verbs group 1</a>
+            <a href="#dictionary" class="btn">Japanese Dictionary</a>
+            <a href="#resources" class="btn">Learning Resources</a>
+        </div>
+    </div>
+
+    <script>
+        const typewriter = document.getElementById('motivation-text');
+        const text = "Get ready to explore the beauty of the Japanese language and culture. Practice makes perfect!";
+        let index = 0;
+
+        function type() {
+            if (index < text.length) {
+                typewriter.innerHTML = text.slice(0, index) + '<span class="blinking-cursor">|</span>';
+                index++;
+                setTimeout(type, Math.random() * 150 + 50);
+            } else {
+                typewriter.innerHTML = text.slice(0, index) + '<span class="blinking-cursor">|</span>';
+            }
+        }
+
+        // start typing
+        type();
+    </script>
+</body>
+</html>
